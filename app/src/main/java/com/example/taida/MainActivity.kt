@@ -1,6 +1,11 @@
 package com.example.taida
 
+import android.content.Context
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
+import android.os.VibrationEffect
+import android.os.Vibrator
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -14,8 +19,20 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.example.taida.ui.theme.TaidaTheme
 
 class MainActivity : ComponentActivity() {
+    private val handler = Handler(Looper.getMainLooper())
+    private lateinit var vibrator: Vibrator
+
+    private val vibrationRunnable = object : Runnable {
+        override fun run() {
+            vibrator.vibrate(VibrationEffect.createOneShot(200, VibrationEffect.DEFAULT_AMPLITUDE))
+            handler.postDelayed(this, 1000)
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        vibrator = getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
+        handler.post(vibrationRunnable)
         enableEdgeToEdge()
         setContent {
             TaidaTheme {
@@ -27,6 +44,11 @@ class MainActivity : ComponentActivity() {
                 }
             }
         }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        handler.removeCallbacks(vibrationRunnable)
     }
 }
 
