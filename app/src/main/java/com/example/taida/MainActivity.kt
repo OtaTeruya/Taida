@@ -24,9 +24,14 @@ class MainActivity : ComponentActivity() {
 
     private val vibrationRunnable = object : Runnable {
         override fun run() {
-            vibrator.vibrate(VibrationEffect.createOneShot(200, VibrationEffect.DEFAULT_AMPLITUDE))
+            vibrator.vibrate(VibrationEffect.createOneShot(200, 255))
             handler.postDelayed(this, 1000)
         }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        handler.removeCallbacks(vibrationRunnable)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -44,11 +49,6 @@ class MainActivity : ComponentActivity() {
                 }
             }
         }
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        handler.removeCallbacks(vibrationRunnable)
     }
 }
 
